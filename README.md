@@ -29,6 +29,8 @@ The models do not automatically establish the truth of a source, the causal mean
 
 `models/<name>/ontology.md` is the canonical definition source of that public model. Query examples and synthetic test fixtures live alongside it. If a domain has a `skills/<skill-name>/SKILL.md`, that file is the **only editable domain Skill source**. Published Tags are immutable references to the complete, matched package. The KG OS Plugin may carry **generated, pinned snapshots** of the model and Skill, but must not keep a second independently edited version.
 
+**Domain Skills are optional and separate from the KG OS core Plugin.** Installing KG OS does not install AIMemory or its Skill. After selecting AIMemory, consumers can render an independently installable, self-contained Skill folder from an immutable model Commit using `python3 scripts/export_memory_skill.py --ref <commit> --output <directory-outside-repo>`. The exporter copies only that Commit's Skill and matching Ontology/Cypher references; it does not change an Instance or publish a release. Do not put the rendered folder back into the KG OS core Plugin.
+
 ## Validation
 
 The standard check validates Markdown code blocks, parses the KG OS YAML Definitions, checks references and expected Cypher fixture shapes:

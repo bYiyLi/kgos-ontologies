@@ -27,7 +27,9 @@
 
 ## 唯一真源与版本
 
-每套模型的 `models/<name>/ontology.md` 是**公开模型的唯一可维护定义真源**。如提供领域专属 `skills/<skill-name>/SKILL.md`，其行为规范也只在领域包维护一份。查询与测试随模型版本发布；KG OS Plugin 只能携带从指定 Git Commit **生成的模型和 Skill 固定快照**，不能在两处手工维护不同版本。
+每套模型的 `models/<name>/ontology.md` 是**公开模型的唯一可维护定义真源**。如提供领域专属 `skills/<skill-name>/SKILL.md`，其行为规范也只在领域包维护一份。查询与测试随模型版本发布；领域 Skill 与 KG OS 核心 Plugin **独立交付、按需安装**，不能在两个仓库人工维护不同版本。
+
+采用 AIMemory 模型时，可运行 `python3 scripts/export_memory_skill.py --ref <commit> --output <仓库外目录>`，从同一个不可变 Commit 生成包含 `SKILL.md`、Ontology 与 Cypher 引用的独立 Skill 目录。该命令不创建 Knowledge、不修改 KG OS Instance，也不将 Memory Skill 自动加入 KG OS 核心 Plugin。
 
 ## 验证
 

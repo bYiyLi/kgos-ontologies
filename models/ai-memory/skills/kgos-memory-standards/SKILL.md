@@ -45,4 +45,4 @@ description: Guide AI long-term memory classification, topic organization, conte
 - [Ontology 定义](../../ontology.md)：需要创建或核查 AIMemory 模型、关系或索引时读取；每个 YAML 块是单一 KG OS Definition，不能作为完整 Patch 直接执行。
 - [业务 Cypher](../../cypher.md)：需要按类型、主题、Cue、来源、时间/事件等读取时选择适用查询，参数、State 与目标模型均以真实连接为准。
 
-这两个文件是同一公开模型包的唯一可维护来源。KG OS Plugin 可携带固定 Commit 生成的离线 `references/ontology.md`、`references/cypher.md`，不能把快照变成第二份人工维护的模型；安装 Skill 不自动导入或创建 Knowledge。
+这两个文件是同一公开模型包的唯一可维护来源。本 Skill 与 KG OS 核心 Plugin **独立交付、按需安装**。可由公开仓库的 `scripts/export_memory_skill.py` 从同一固定 Commit 生成带本地 `references/ontology.md` 和 `references/cypher.md` 的独立 Skill 目录，不能把快照变成第二份人工维护的模型；安装 Skill 不自动导入或创建 Knowledge。
