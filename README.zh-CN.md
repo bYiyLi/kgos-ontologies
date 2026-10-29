@@ -11,8 +11,9 @@
 | 模型 | 用途 | 唯一定义来源 | 查询与测试 |
 | --- | --- | --- | --- |
 | [VLog 事件本体](models/vlog/README.md) | 事件、参与对象、分类、时间、地点、来源、验证和后续关系 | [Ontology](models/vlog/ontology.md) | [Cypher](models/vlog/cypher.md) · [合成测试资料](models/vlog/tests/) |
+| [AIMemory 长期记忆本体](models/ai-memory/README.md) | 记忆类型、主题、召回线索、来源、经历及演进 | [Ontology](models/ai-memory/ontology.md) | [Cypher](models/ai-memory/cypher.md) · [合成测试](models/ai-memory/tests/) · [专属 Skill](models/ai-memory/skills/kgos-memory-standards/SKILL.md) |
 
-首版只发布一套经过现有测试验证的可选模型，不把教学案例、所有领域词语或 KG OS Kernel 内部结构冒充通用本体。
+当前提供两套可选模型，不把教学案例、所有领域词语或 KG OS Kernel 内部结构冒充通用本体。AIMemory 的主题与类型在 Knowledge 层组织，Domain 不隔离记忆实例或权限。
 
 ## AI 如何复用
 
@@ -26,7 +27,7 @@
 
 ## 唯一真源与版本
 
-每套模型的 `models/<name>/ontology.md` 是**公开模型的唯一可维护定义真源**；查询与测试随模型版本一起发布。Skill 可以携带从指定 Git Commit **生成的固定快照**，不得在 Skill 和本仓库两处人工维护不同的 Definition。新模型只有在解决实际业务问题、经过语义审查与必要测试后才新增。
+每套模型的 `models/<name>/ontology.md` 是**公开模型的唯一可维护定义真源**。如提供领域专属 `skills/<skill-name>/SKILL.md`，其行为规范也只在领域包维护一份。查询与测试随模型版本发布；KG OS Plugin 只能携带从指定 Git Commit **生成的模型和 Skill 固定快照**，不能在两处手工维护不同版本。
 
 ## 验证
 

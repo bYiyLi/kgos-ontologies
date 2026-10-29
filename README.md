@@ -11,8 +11,9 @@ This public repository contains optional, documented reference models for agents
 | Model | Purpose | Definition source | Queries and tests |
 | --- | --- | --- | --- |
 | [VLog event ontology](models/vlog/README.md) | Events, involved entities, classifications, places, time intervals, sources and verifications | [Ontology](models/vlog/ontology.md) | [Cypher examples](models/vlog/cypher.md) · [fixtures](models/vlog/tests/) |
+| [AIMemory ontology](models/ai-memory/README.md) | Long-term memory types, topics, cues, sources, events and supersession | [Ontology](models/ai-memory/ontology.md) | [Cypher](models/ai-memory/cypher.md) · [tests](models/ai-memory/tests/) · [Skill](models/ai-memory/skills/kgos-memory-standards/SKILL.md) |
 
-This first collection contains **one** reusable model, not a general-purpose upper ontology or a catalogue of all KG OS domains. Additional models should be added only when they solve a demonstrated use case and can be validated.
+The collection contains **two** reusable models, not a general-purpose upper ontology or a catalogue of all KG OS domains. Additional models should be added only when they solve a demonstrated use case and can be validated.
 
 ## How to use a model
 
@@ -26,7 +27,7 @@ The models do not automatically establish the truth of a source, the causal mean
 
 ## Versioning and model ownership
 
-`models/<name>/ontology.md` is the canonical definition source of that public model. Query examples and synthetic test fixtures live alongside it. Published Tags are immutable references to the complete, matched package. An installed KG OS Skill can carry a **generated, explicitly pinned snapshot** of a model, but should not maintain a second independently edited model. Update such a snapshot from the designated public Git Commit and validate it before publishing a new Skill package.
+`models/<name>/ontology.md` is the canonical definition source of that public model. Query examples and synthetic test fixtures live alongside it. If a domain has a `skills/<skill-name>/SKILL.md`, that file is the **only editable domain Skill source**. Published Tags are immutable references to the complete, matched package. The KG OS Plugin may carry **generated, pinned snapshots** of the model and Skill, but must not keep a second independently edited version.
 
 ## Validation
 

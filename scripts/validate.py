@@ -19,7 +19,7 @@ def check_model(d):
 
     source = (d / "ontology.md").read_text(encoding="utf-8")
     pattern = re.compile(
-        rf"(?ms)^### (node|relationship):([A-Za-z_][A-Za-z0-9_]*)[^\n]*\n"
+        rf"(?ms)^### (domain|node|relationship):([A-Za-z_][A-Za-z0-9_]*)[^\n]*\n"
         rf"(?:[ \t]*\n)*[ \t]*{F}yaml[ \t]*\n(.*?)\n{F}[ \t]*$"
     )
     blocks = list(pattern.finditer(source))
@@ -28,6 +28,7 @@ def check_model(d):
 
     models = {}
     nodes = set()
+    domain = None
     for match in blocks:
         kind, name, body = match.groups()
         ref = f"{kind}:{name}"
@@ -36,6 +37,16 @@ def check_model(d):
         model = yaml.safe_load(body)
         if not isinstance(model, dict) or model.get("name") != name:
             raise ValueError(f"{ref}: YAML name/heading mismatch")
+        if kind == "domain":
+            if domain is not None:
+                raise ValueError("duplicate Domain")
+            includes = model.get("includes")
+            if (not isinstance(includes, list)
+                    or any(not isinstance(item, str) for item in includes)
+                    or len(includes) != len(set(includes))):
+                raise ValueError(f"{ref}: invalid/duplicate Domain includes")
+            domain = model
+            continue
         if not isinstance(model.get("constraints"), list):
             raise ValueError(f"{ref}: missing constraints list")
         props = model.get("properties")
@@ -59,9 +70,37 @@ def check_model(d):
     for ref, model in models.items():
         if ref.startswith("relationship:"):
             for endpoint in ("from", "to"):
+                if endpoint not in model:
+                    raise ValueError(f"{ref}: missing {endpoint} endpoint")
                 dest = model.get(endpoint)
+                if endpoint == "to" and dest is None:
+                    # Cross-domain references may accept multiple target Labels.
+                    # KG OS does not enforce semantic target type in this case.
+                    continue
                 if not isinstance(dest, str) or not dest.startswith("node:") or dest[5:] not in nodes:
                     raise ValueError(f"{ref}: unresolved {endpoint} endpoint {dest}")
+    if domain is not None:
+        for member in domain["includes"]:
+            if member not in models:
+                raise ValueError(f"Domain includes unresolved Definition {member}")
+
+    skills_dir = d / "skills"
+    if skills_dir.exists():
+        skills = sorted(skills_dir.iterdir())
+        if not skills or any(not skill.is_dir() for skill in skills):
+            raise ValueError("invalid Skill directories")
+        for skill in skills:
+            source_path = skill / "SKILL.md"
+            if not source_path.is_file():
+                raise ValueError(f"{skill.name}: missing SKILL.md")
+            source_text = source_path.read_text(encoding="utf-8")
+            if (not source_text.startswith("---\n")
+                    or not re.search(rf"(?m)^name: {re.escape(skill.name)}$", source_text)
+                    or not re.search(r"(?m)^description: .+", source_text)):
+                raise ValueError(f"{skill.name}: invalid Skill frontmatter")
+            for link in re.findall(r"\[[^\]]+\]\((\.\./\.\./[^)#]+)(?:#[^)]*)?\)", source_text):
+                if not (skill / link).is_file():
+                    raise ValueError(f"{skill.name}: missing resource {link}")
 
     cypher = (d / "cypher.md").read_text(encoding="utf-8")
     qpattern = re.compile(rf"(?ms)^## Q([0-9]+)[^\n]*\n.*?^{F}cypher[ \t]*\n(.*?)^{F}[ \t]*$")
@@ -102,7 +141,8 @@ def check_model(d):
             raise ValueError(f"{cid}: invalid result columns/rows")
         if any(not isinstance(row, list) or len(row) != len(columns) for row in rows):
             raise ValueError(f"{cid}: row width differs from columns")
-    return f"{d.name}: {len(nodes)} nodes, {len(models)-len(nodes)} relationships, {len(queries)} queries, {len(cases)} expected cases"
+    domain_note = f", 1 domain" if domain else ""
+    return f"{d.name}: {len(nodes)} nodes, {len(models)-len(nodes)} relationships{domain_note}, {len(queries)} queries, {len(cases)} expected cases"
 
 
 def main():

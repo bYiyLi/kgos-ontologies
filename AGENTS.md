@@ -8,10 +8,11 @@ This repository publishes **optional reference KG OS Property Graph ontology mod
 - `models/<name>/ontology.md`: **canonical Definition YAML and model semantics** for that model.
 - `models/<name>/cypher.md`: read-only competency-question queries for the matching model version.
 - `models/<name>/tests/`: synthetic test fixtures and expected results, not production facts.
+- `models/<name>/skills/<skill-name>/SKILL.md` (optional): the single canonical domain-specific Skill source; consumer Plugins may carry generated pinned snapshots.
 - `scripts/validate.py` and `.github/workflows/validate.yml`: structural validation and its CI entrypoint.
 - `CONTRIBUTING.md`: current contribution policy.
 
-Do not maintain a second hand-edited copy of a model in a KG OS Skill or another repo. Consumers may carry **pinned generated snapshots** of an exact public Commit. Never silently change a shipped Tag or claim compatibility from static validation alone.
+Do not maintain a second hand-edited copy of a model or domain Skill in KG OS or another repo. Consumers may carry **pinned generated snapshots** of an exact public Commit. Never silently change a shipped Tag or claim compatibility from static validation alone.
 
 ## Task discipline
 
